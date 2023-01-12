@@ -10,15 +10,15 @@ pip install sourgrapes
 Here're the three commands to run while in the grape directory:
 
 ```console
- grape init
+ grape-init
 ```
 
 ```console
- grape build
+ grape-build
 ```
 
 ```console
- grape develop
+ grape-develop
 ```
 
 The ```init``` command  creates a few directories: pages/, static/, and template/. These should be able to serve as the building blocks for a static site. 
