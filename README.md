@@ -2,6 +2,11 @@
 
 Simple cli to generate a static site using python, [Jinja](https://jinja.palletsprojects.com/en/3.1.x/), and markdown files. [Typer](https://typer.tiangolo.com/) is also used. 
 
+Install
+```console
+pip install sourgrapes
+```
+
 Here're the three commands to run while in the grape directory:
 
 ```console
