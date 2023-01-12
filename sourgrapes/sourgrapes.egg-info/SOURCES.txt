@@ -1,0 +1,7 @@
+setup.py
+sourgrapes.egg-info/PKG-INFO
+sourgrapes.egg-info/SOURCES.txt
+sourgrapes.egg-info/dependency_links.txt
+sourgrapes.egg-info/entry_points.txt
+sourgrapes.egg-info/requires.txt
+sourgrapes.egg-info/top_level.txt

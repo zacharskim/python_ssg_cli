@@ -2,7 +2,7 @@
 
 from typer.testing import CliRunner
 
-from unboltedSoup import __app_name__, __version__, cli
+from sourgrapes import __app_name__, __version__, cli
 
 runner = CliRunner()
 
