@@ -1,4 +1,0 @@
-[console_scripts]
-grape-build = sourgrapes.cli:build
-grape-develop = sourgrapes.cli:develop
-grape-init = sourgrapes.cli:init

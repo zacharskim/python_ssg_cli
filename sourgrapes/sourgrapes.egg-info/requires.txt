@@ -1,4 +1,0 @@
-typer
-markdown2
-jinja2
-python-frontmatter

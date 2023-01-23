@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: sourgrapes
-Version: 0.7
-Summary: A simple command-line interface for static site generation
-Home-page: https://github.com/zacharskim/python_ssg_cli
-Author: Matt Zacharski
-Author-email: matthew.zacharski@gmail.com
