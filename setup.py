@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='sourgrapes',
-    version='0.6',
+    version='0.8',
     description='A simple command-line interface for static site generation',
     author='Matt Zacharski',
     author_email='matthew.zacharski@gmail.com',
@@ -12,7 +12,7 @@ setup(
         'typer',
         'markdown2',
         'jinja2',
-        'frontmatter',
+        'python-frontmatter',
         
     ],
     entry_points='''
