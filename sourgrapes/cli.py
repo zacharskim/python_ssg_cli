@@ -8,7 +8,7 @@ import concurrent.futures
 from sourgrapes import __app_name__, __version__
 import time
 from markdown2 import markdown
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 import frontmatter
 import threading
 from http.server import ThreadingHTTPServer
@@ -47,13 +47,13 @@ def init():
         makeDir(dirName)
 
     with open('pages/index.md', 'w') as f:
-        f.write('---\ntemplate: homepage\ntitle: homepage\n---\n# Hello World\n Look at this!')
+        f.write('---\ntitle: index\n---\n# Hello World\n Look at this!')
     
     with open('static/main.js', 'w') as f:
         f.write('console.log("Hello World :)")')
     
-    with open('template/homepage.html', 'w') as f:
-        f.write('<html><body><div>{{htmlPage}}</div><script type="text/javascript" src="public/main.js"></script></body></html>')
+    with open('template/index.html', 'w') as f:
+        f.write('<html><body><div>{{index}}</div><script type="text/javascript" src="./main.js"></script></body></html>')
 
 
 @app.command()
@@ -79,7 +79,7 @@ def copyFiles(src: str, dest: str, htmlFiles: str=None) -> None:
 def processFiles(src: str, dest: str) -> list[str]:
     files = os.listdir(src)
     template_env = Environment(loader=FileSystemLoader(searchpath='template'))
-    
+    template_vars, templates = {}, {}
     
     #loop over all files in ./pages, apply them to their respective templates...
     for f in files:
@@ -89,20 +89,38 @@ def processFiles(src: str, dest: str) -> list[str]:
                     #need to parse out the yaml stuff apprently bc frontmatter.load() returns a post object, not a string...
                     re.sub('---[^-]+---','',markdown_file.read()),
                     extras=['fenced-code-blocks', 'code-friendly'])
-
-
-            yamlData = frontmatter.load("pages/"+f)    
-            template = template_env.get_template(yamlData["title"] + '.html')
             
-            with open(f'./public/{yamlData["title"]}.html', 'w') as output_file:
-                output_file.write(
-                    template.render(
-                        htmlPage=htmlPage
-                    )
-                )
+            yamlData = frontmatter.load("pages/"+f)
+
+            try:
+                template = template_env.get_template(yamlData["title"] + '.html')
+            except TemplateNotFound as e:
+                continue
+
+            #store markdown to html code in a dict, use title of markdown files as 
+            #variable names
+            template_vars[yamlData["title"]] = htmlPage
+            templates[yamlData["title"]] = template
         else:
             raise Exception("Please make sure all files in the /pages directory end with .md")
     
+    
+
+    for key in template_vars:
+   
+        template = templates[key]
+
+      
+
+
+        #any markdown code that's converted will be accessible within every template...
+        with open(f'./public/{key}.html', 'w') as output_file:
+            output_file.write(
+                template.render(
+                    template_vars
+                )
+            )
+
 
 @app.command()
 def develop(): 
@@ -164,8 +182,13 @@ def generateFileNames() -> tuple[list[str], list[int]]:
 class Handler(http.server.SimpleHTTPRequestHandler):
     
     def do_GET(self):
-        if self.path == '/':
-            self.path = 'public/homepage.html'
+     
+        if self.path.startswith('/'):
+            if self.path != "/":
+                self.path = 'public' + self.path + '.html'
+            else:
+                self.path = 'public' + self.path
+
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
     
 
@@ -190,6 +213,7 @@ class MyServer(threading.Thread):
        
         try:
             self.server = ThreadingHTTPServer(('localhost', 8080), Handler)
+            self.server.directory = os.path.join(os.getcwd(), 'public')
             print("\nLocal server at http://localhost:8080/")
             url = "http://localhost:8080/"
             if not tabOpen:

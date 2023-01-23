@@ -1,4 +1,4 @@
 typer
 markdown2
 jinja2
-frontmatter
+python-frontmatter
